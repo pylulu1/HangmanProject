@@ -3,6 +3,8 @@ package com.example.hangman;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -23,23 +25,7 @@ public class GameBoard extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_board);
 
-        intent = new Intent(this, GameBoard.class);
-        final TextView livesText = findViewById(R.id.counter);
-        livesText.setText(String.valueOf(lives));
-        //System.out.println(String.valueOf(lives));
-        //System.out.println(lives);
-        //System.out.println(lives.getText());
-
-        //set word from api here
-
-        for (int num = 0; num < word.length(); num++) {
-            current += "— ";
-        }
-
-        System.out.println(current);
-
-        final TextView wordText = findViewById(R.id.word);
-        wordText.setText(current);
+        start();
 
         final Button a = findViewById(R.id.a);
         createButton(a);
@@ -139,7 +125,33 @@ public class GameBoard extends AppCompatActivity {
             }
         });
     }
+
     protected void checkGame() {
-        //AlertDialog.Builder builder = new AlertDialog.Builder();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Game Over");
+        builder.setMessage("The word was: "  + word);
+        builder.setPositiveButton("New Game", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                start();
+            }
+        });
+        //builder.setNegativeButton("Return to Home", (dialog, id) -> finish());
     }
+
+    protected void start() {
+        //intent = new Intent(this, GameBoard.class);
+        final TextView livesText = findViewById(R.id.counter);
+        livesText.setText(String.valueOf(lives));
+
+        //set word from api here
+
+        for (int num = 0; num < word.length(); num++) {
+            current += "— ";
+        }
+
+        final TextView wordText = findViewById(R.id.word);
+        wordText.setText(current);
+    }
+
 }
