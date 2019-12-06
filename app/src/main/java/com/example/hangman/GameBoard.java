@@ -1,17 +1,22 @@
 package com.example.hangman;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 public class GameBoard extends AppCompatActivity {
 
     private Intent intent;
+    String word = "MOOSE";
+    String current = "";
+    int lives = 7;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,8 +24,22 @@ public class GameBoard extends AppCompatActivity {
         setContentView(R.layout.activity_game_board);
 
         intent = new Intent(this, GameBoard.class);
-        final TextView lives = findViewById(R.id.counter);
-        lives.setText("7");
+        final TextView livesText = findViewById(R.id.counter);
+        livesText.setText(String.valueOf(lives));
+        //System.out.println(String.valueOf(lives));
+        //System.out.println(lives);
+        //System.out.println(lives.getText());
+
+        //set word from api here
+
+        for (int num = 0; num < word.length(); num++) {
+            current += "— ";
+        }
+
+        System.out.println(current);
+
+        final TextView wordText = findViewById(R.id.word);
+        wordText.setText(current);
 
         final Button a = findViewById(R.id.a);
         createButton(a);
@@ -95,18 +114,32 @@ public class GameBoard extends AppCompatActivity {
 
     //disables the letter buttons once they're clicked
     protected void createButton(final Button letter) {
+        final TextView wordText = findViewById(R.id.word);
         letter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkLetter((String) letter.getText());
-                System.out.print(letter.getText());
+                String thisLetter = (String) letter.getText();
                 letter.setEnabled(false);
+                int count = 0;
+                for (int i = 0; i < word.length(); i++) {
+                    if (thisLetter.equals(word.substring(i, i + 1))) {
+                        current = current.substring(0, 2 * i) + thisLetter + current.substring(2 * i + 1);
+                        System.out.println(current);
+                        wordText.setText(current);
+                        count++;
+                    }
+                }
+                if (count == 0) {
+                    TextView livesCount = findViewById(R.id.counter);
+                    livesCount.setText(String.valueOf(--lives));
+                }
+                if (lives == 0) {
+                    checkGame();
+                }
             }
         });
     }
-
-    //checks whether the letter is in the word
-    protected boolean checkLetter(String s) {
-        return false;
+    protected void checkGame() {
+        //AlertDialog.Builder builder = new AlertDialog.Builder();
     }
 }
