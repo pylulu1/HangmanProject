@@ -16,9 +16,10 @@ import org.w3c.dom.Text;
 public class GameBoard extends AppCompatActivity {
 
     private Intent intent;
-    String word = "MOOSE";
-    String current = "";
-    int lives = 7;
+    String word;
+    String current;
+    int lives;
+    int count;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +27,105 @@ public class GameBoard extends AppCompatActivity {
         setContentView(R.layout.activity_game_board);
 
         start();
+
+        final Button exit = findViewById(R.id.exitGame);
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.activity_main);
+            }
+        });
+        final Button newGame = findViewById(R.id.newGame);
+        newGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                startActivity(intent);
+            }
+        });
+
+    }
+
+    //disables the letter buttons once they're clicked
+    protected void createButton(final Button letter) {
+        letter.setEnabled(true);
+        final TextView wordText = findViewById(R.id.word);
+        letter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String thisLetter = (String) letter.getText();
+                letter.setEnabled(false);
+                int difCount = 0;
+                for (int i = 0; i < word.length(); i++) {
+                    if (thisLetter.equals(word.substring(i, i + 1))) {
+                        current = current.substring(0, 2 * i) + thisLetter + current.substring(2 * i + 1);
+                        System.out.println(current);
+                        wordText.setText(current);
+                        count++;
+                        difCount++;
+                    }
+                }
+                if (difCount == 0) {
+                    TextView livesCount = findViewById(R.id.counter);
+                    livesCount.setText(String.valueOf(--lives));
+                }
+                if (lives == 0) {
+                    checkGame("lost");
+                }
+                if (count == word.length()) {
+                    checkGame("won");
+                }
+            }
+        });
+    }
+
+    protected void checkGame(String done) {
+        String title;
+        String message;
+        if (done.equals("lost")) {
+            title = "Game Over";
+            message = "The word was: "  + word;
+        } else {
+            title = "You won!";
+            message = "Would you like to play again?"; //definition of word
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setPositiveButton("New Game", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                start();
+            }
+        });
+        builder.setNegativeButton("Return to Home", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        builder.show();
+    }
+
+    protected void start() {
+        intent = new Intent(this, GameBoard.class);
+        final TextView livesText = findViewById(R.id.counter);
+
+        count = 0;
+        word = "GOOSE";
+        current = "";
+        lives = 7;
+
+        livesText.setText(String.valueOf(lives));
+
+        //set word from api here
+
+        for (int num = 0; num < word.length(); num++) {
+            current += "— ";
+        }
+
+        final TextView wordText = findViewById(R.id.word);
+        wordText.setText(current);
 
         final Button a = findViewById(R.id.a);
         createButton(a);
@@ -79,79 +179,6 @@ public class GameBoard extends AppCompatActivity {
         createButton(y);
         final Button z = findViewById(R.id.z);
         createButton(z);
-
-        final Button exit = findViewById(R.id.exitGame);
-        exit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setContentView(R.layout.activity_main);
-            }
-        });
-        final Button newGame = findViewById(R.id.newGame);
-        newGame.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-                startActivity(intent);
-            }
-        });
-
-    }
-
-    //disables the letter buttons once they're clicked
-    protected void createButton(final Button letter) {
-        final TextView wordText = findViewById(R.id.word);
-        letter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String thisLetter = (String) letter.getText();
-                letter.setEnabled(false);
-                int count = 0;
-                for (int i = 0; i < word.length(); i++) {
-                    if (thisLetter.equals(word.substring(i, i + 1))) {
-                        current = current.substring(0, 2 * i) + thisLetter + current.substring(2 * i + 1);
-                        System.out.println(current);
-                        wordText.setText(current);
-                        count++;
-                    }
-                }
-                if (count == 0) {
-                    TextView livesCount = findViewById(R.id.counter);
-                    livesCount.setText(String.valueOf(--lives));
-                }
-                if (lives == 0) {
-                    checkGame();
-                }
-            }
-        });
-    }
-
-    protected void checkGame() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Game Over");
-        builder.setMessage("The word was: "  + word);
-        builder.setPositiveButton("New Game", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                start();
-            }
-        });
-        //builder.setNegativeButton("Return to Home", (dialog, id) -> finish());
-    }
-
-    protected void start() {
-        //intent = new Intent(this, GameBoard.class);
-        final TextView livesText = findViewById(R.id.counter);
-        livesText.setText(String.valueOf(lives));
-
-        //set word from api here
-
-        for (int num = 0; num < word.length(); num++) {
-            current += "— ";
-        }
-
-        final TextView wordText = findViewById(R.id.word);
-        wordText.setText(current);
     }
 
 }
