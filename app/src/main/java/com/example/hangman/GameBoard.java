@@ -57,7 +57,6 @@ public class GameBoard extends AppCompatActivity {
                 mediaPlayer.start();
             }
         });
-        //mediaPlayer.start();
 
         startGame();
 
@@ -135,6 +134,12 @@ public class GameBoard extends AppCompatActivity {
         builder.setNegativeButton("Return to Home", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
                 finish();
             }
         });
