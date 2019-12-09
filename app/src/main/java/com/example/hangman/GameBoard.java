@@ -4,31 +4,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.net.URL;
-
-import javax.net.ssl.HttpsURLConnection;
-
-import static android.media.AudioManager.ADJUST_UNMUTE;
 
 public class GameBoard extends AppCompatActivity {
 
@@ -37,7 +17,7 @@ public class GameBoard extends AppCompatActivity {
     String current;
     int lives;
     int count;
-    int index = 0;
+    static int index = 0;
     String[] words = {"SERENDIPITY", "GOOSE", "DIFFERENT", "HELLO", "ENDING"};
     MediaPlayer mediaPlayer = new MediaPlayer();
 
@@ -48,8 +28,6 @@ public class GameBoard extends AppCompatActivity {
 
         mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.creativeminds);
         mediaPlayer.setVolume(40, 40);
-        System.out.println("SONG" + R.raw.hands);
-        System.out.println(mediaPlayer == null);
         mediaPlayer.setLooping(true);
         mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
@@ -60,13 +38,6 @@ public class GameBoard extends AppCompatActivity {
 
         startGame();
 
-        final Button exit = findViewById(R.id.exitGame);
-        exit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setContentView(R.layout.activity_main);
-            }
-        });
         final Button newGame = findViewById(R.id.newGame);
         newGame.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,10 +121,7 @@ public class GameBoard extends AppCompatActivity {
         intent = new Intent(this, GameBoard.class);
         final TextView livesText = findViewById(R.id.counter);
 
-        //getWord();
-
         count = 0;
-        word = "SERENDIPITY";
         current = "";
         lives = 7;
 
