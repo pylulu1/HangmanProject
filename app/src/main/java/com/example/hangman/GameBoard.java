@@ -18,7 +18,7 @@ public class GameBoard extends AppCompatActivity {
     int lives;
     int count;
     static int index = 0;
-    String[] words = {"SERENDIPITY", "GOOSE", "DIFFERENT", "HELLO", "ENDING"};
+    String[] words = {"SERENDIPITY", "GOOSE", "DIFFERENT", "HELLO", "XYLOPHONE", "HOLIDAY", "INTERESTING", "NEVER", "HEADPHONES", "ENDING"};
     MediaPlayer mediaPlayer = new MediaPlayer();
 
     @Override
@@ -43,6 +43,7 @@ public class GameBoard extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+                mediaPlayer.release();
                 startActivity(intent);
             }
         });
@@ -61,7 +62,6 @@ public class GameBoard extends AppCompatActivity {
                 int difCount = 0;
                 for (int i = 0; i < word.length(); i++) {
                     if (thisLetter.equals(word.substring(i, i + 1))) {
-                        System.out.println("Is playing: " + mediaPlayer.isPlaying());
                         current = current.substring(0, 2 * i) + thisLetter + current.substring(2 * i + 1);
                         System.out.println(current);
                         wordText.setText(current);
@@ -75,8 +75,10 @@ public class GameBoard extends AppCompatActivity {
                 }
                 if (lives == 0) {
                     checkGame("lost");
+                    mediaPlayer.release();
                 }
                 if (count == word.length()) {
+                    mediaPlayer.release();
                     checkGame("won");
                 }
             }
